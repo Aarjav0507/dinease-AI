@@ -15,6 +15,7 @@ from app.routers.payment import router as payment_router
 from app.routers.admin import (
     router as admin_router
 )
+from app.routers.chatbot import router as chatbot_router
 
 
 
@@ -47,6 +48,7 @@ app.include_router(reservation_router)
 app.include_router(order_router)
 app.include_router(payment_router)
 app.include_router(admin_router)
+app.include_router(chatbot_router)
 # -------------------------
 # Root Endpoint
 # -------------------------

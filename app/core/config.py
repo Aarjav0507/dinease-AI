@@ -40,6 +40,7 @@ class Settings(BaseSettings):
      # ----------------------------
     RAZORPAY_KEY_ID: str
     RAZORPAY_KEY_SECRET: str
+
      #email sender
     SMTP_HOST: str
     SMTP_PORT: int
@@ -47,6 +48,9 @@ class Settings(BaseSettings):
     SMTP_PASSWORD: str
     
     EMAIL_FROM: str
+
+    # mistral AI
+    MISTRAL_API_KEY: str
 
     # ----------------------------
     # Read .env file

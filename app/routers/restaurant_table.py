@@ -13,6 +13,9 @@ from app.schemas.restaurant_table import (
 from app.services.restaurant_table_service import (
     RestaurantTableService
 )
+from app.dependencies.admin import (
+    get_current_admin
+)
 
 router = APIRouter(
     prefix="/tables",
@@ -26,7 +29,8 @@ router = APIRouter(
 )
 def create_table(
     table_data: RestaurantTableCreate,
-    db: Session = Depends(get_db)
+    db: Session = Depends(get_db),
+    current_admin=Depends(get_current_admin)
 ):
     return RestaurantTableService.create_table(
         db,
@@ -65,7 +69,8 @@ def get_table_by_id(
 )
 def delete_table(
     table_id: int,
-    db: Session = Depends(get_db)
+    db: Session = Depends(get_db),
+    current_admin=Depends(get_current_admin)
 ):
     return RestaurantTableService.delete_table(
         db,

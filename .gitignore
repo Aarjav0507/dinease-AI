@@ -7,7 +7,7 @@ __pycache__/
 
 # Environment Variables
 .env
-
+.env.*
 # IDE
 .vscode/
 
@@ -23,3 +23,6 @@ alembic/__pycache__/
 # OS Files
 .DS_Store
 Thumbs.db
+
+#vector db
+app/data/faiss_db/

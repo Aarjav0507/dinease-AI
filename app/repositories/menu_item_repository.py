@@ -1,6 +1,8 @@
 from sqlalchemy.orm import Session
 
 from app.models.menu_item import MenuItem
+from sqlalchemy import func
+from app.models.category import Category
 
 
 class MenuItemRepository:
@@ -88,3 +90,74 @@ class MenuItemRepository:
 
         db.delete(menu_item)
         db.commit()
+
+    @staticmethod
+    def search_by_name(
+      db: Session,
+      name: str
+):
+      return (
+        db.query(MenuItem)
+        .filter(
+            func.lower(MenuItem.name)
+            .contains(name.lower())
+        )
+        .all()
+    )
+
+    @staticmethod
+    def search_by_question(
+      db: Session,
+      question: str
+):
+
+      menu_items = (
+        db.query(MenuItem)
+        .all()
+    )
+
+      question_lower = question.lower()
+
+      matches = []
+
+      for item in menu_items:
+
+        if item.name.lower() in question_lower:
+
+            matches.append(item)
+
+      return matches
+
+    @staticmethod
+    def get_by_category_name(
+      db: Session,
+      category_name: str
+):
+
+      return (
+        db.query(MenuItem)
+        .join(Category)
+        .filter(
+            func.lower(Category.name)
+            == category_name.lower()
+        )
+        .all()
+    )
+    @staticmethod
+    def get_vegetarian_by_category_name(
+      db: Session,
+      category_name: str
+):
+
+    
+
+     return (
+        db.query(MenuItem)
+        .join(Category)
+        .filter(
+            func.lower(Category.name)
+            == category_name.lower(),
+            MenuItem.is_veg == True
+        )
+        .all()
+    )

@@ -39,6 +39,10 @@ from app.core.constants import (
 from app.services.system_settings_service import (
     SystemSettingsService
 )
+from app.dependencies.auth import (
+    get_current_user
+)
+
 
 
 class ReservationService:
@@ -180,8 +184,11 @@ class ReservationService:
     @staticmethod
     def get_reservation_by_id(
         db: Session,
-        reservation_id: int
+        reservation_id: int,
+         current_user
+
     ):
+        
 
         reservation = (
             ReservationRepository
@@ -196,6 +203,11 @@ class ReservationService:
                 status_code=status.HTTP_404_NOT_FOUND,
                 detail="Reservation not found."
             )
+        if reservation.user_id != current_user.id:
+         raise HTTPException(
+        status_code=403,
+        detail="Not authorized"
+    )
 
         return reservation
     @staticmethod

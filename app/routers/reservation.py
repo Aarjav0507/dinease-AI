@@ -17,7 +17,9 @@ from app.schemas.reservation import (
 from app.services.reservation_service import (
     ReservationService
 )
-
+from app.dependencies.admin import (
+    get_current_admin
+)
 router = APIRouter(
     prefix="/reservations",
     tags=["Reservations"]
@@ -62,12 +64,14 @@ def get_my_reservations(
 )
 def get_reservation_by_id(
     reservation_id: int,
-    db: Session = Depends(get_db)
+    db: Session = Depends(get_db),
+    current_user=Depends(get_current_user)
 ):
 
     return ReservationService.get_reservation_by_id(
         db,
-        reservation_id
+        reservation_id,
+         current_user
     )
 
 
@@ -76,7 +80,8 @@ def get_reservation_by_id(
     response_model=List[ReservationResponse]
 )
 def get_all_reservations(
-    db: Session = Depends(get_db)
+    db: Session = Depends(get_db),
+    current_admin=Depends(get_current_admin)
 ):
 
     return ReservationService.get_all_reservations(

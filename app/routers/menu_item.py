@@ -16,7 +16,9 @@ from app.schemas.menu_item import (
 from app.services.menu_item_service import (
     MenuItemService
 )
-
+from app.dependencies.admin import (
+    get_current_admin
+)
 router = APIRouter(
     prefix="/menu-items",
     tags=["Menu Items"]
@@ -30,7 +32,8 @@ router = APIRouter(
 )
 def create_menu_item(
     menu_item: MenuItemCreate,
-    db: Session = Depends(get_db)
+    db: Session = Depends(get_db),
+    current_admin=Depends(get_current_admin)
 ):
     return MenuItemService.create_menu_item(
         db,
@@ -69,7 +72,8 @@ def get_menu_item_by_id(
 def update_menu_item(
     menu_item_id: int,
     menu_item: MenuItemUpdate,
-    db: Session = Depends(get_db)
+    db: Session = Depends(get_db),
+    current_admin=Depends(get_current_admin)
 ):
     return MenuItemService.update_menu_item(
         db,
@@ -83,7 +87,8 @@ def update_menu_item(
 )
 def delete_menu_item(
     menu_item_id: int,
-    db: Session = Depends(get_db)
+    db: Session = Depends(get_db),
+    current_admin=Depends(get_current_admin)
 ):
     return MenuItemService.delete_menu_item(
         db,

@@ -31,6 +31,21 @@ from app.schemas.admin_menu import (
 from app.schemas.system_settings import (
     SystemSettingsUpdate
 )
+from app.models.category import Category
+
+from app.schemas.category import (
+    CategoryCreate,
+    CategoryUpdate
+)
+
+from app.repositories.category_repository import (
+    CategoryRepository
+)
+from fastapi import HTTPException
+from app.repositories.menu_item_repository import (
+    MenuItemRepository
+)
+
 router = APIRouter(
     prefix="/admin",
     tags=["Admin"]
@@ -396,3 +411,100 @@ def update_settings(
             data
         )
     )
+@router.post("/categories")
+def create_category(
+    category_data: CategoryCreate,
+    db: Session = Depends(get_db)
+):
+
+    existing = (
+        CategoryRepository.get_by_name(
+            db,
+            category_data.name
+        )
+    )
+
+    if existing:
+        raise HTTPException(
+            status_code=400,
+            detail="Category already exists"
+        )
+
+    category = Category(
+        name=category_data.name
+    )
+
+    return CategoryRepository.create(
+        db,
+        category
+    )
+@router.patch("/categories/{category_id}")
+def update_category(
+    category_id: int,
+    category_data: CategoryUpdate,
+    db: Session = Depends(get_db)
+):
+
+    category = (
+        CategoryRepository.get_by_id(
+            db,
+            category_id
+        )
+    )
+
+    if not category:
+        raise HTTPException(
+            status_code=404,
+            detail="Category not found"
+        )
+
+    category.name = category_data.name
+
+    return CategoryRepository.update(
+        db,
+        category
+    )
+@router.delete("/categories/{category_id}")
+def delete_category(
+    category_id: int,
+    db: Session = Depends(get_db)
+):
+
+    category = (
+        CategoryRepository.get_by_id(
+            db,
+            category_id
+        )
+    )
+
+    if not category:
+        raise HTTPException(
+            status_code=404,
+            detail="Category not found"
+        )
+    menu_items = (
+        MenuItemRepository.get_by_category(
+        db,
+        category_id
+    )
+)
+
+    if menu_items:
+      raise HTTPException(
+        status_code=400,
+        detail="Cannot delete category with menu items"
+    )
+
+    CategoryRepository.delete(
+        db,
+        category
+    )
+
+    return {
+        "message": "Category deleted successfully"
+    }
+@router.get("/categories")
+def get_all_categories(
+    db: Session = Depends(get_db)
+):
+    return CategoryRepository.get_all(db)
