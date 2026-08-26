@@ -8,7 +8,7 @@ def admin_required(
     current_user = Depends(get_current_user)
 ):
 
-    if current_user.role != ADMIN_ROLE:
+    if current_user.role.lower() != ADMIN_ROLE.lower():
         raise HTTPException(
             status_code=403,
             detail="Admin access required"

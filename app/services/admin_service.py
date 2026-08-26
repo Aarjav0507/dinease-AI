@@ -724,7 +724,7 @@ class AdminService:
             detail="User not found"
         )
 
-      user.role = "admin"
+      user.role = "ADMIN"
 
       return (
         UserRepository.update(
@@ -751,7 +751,7 @@ class AdminService:
             detail="User not found"
         )
 
-      if user.role != "admin":
+      if user.role != "ADMIN":
         raise HTTPException(
             status_code=400,
             detail="User is not an admin"
