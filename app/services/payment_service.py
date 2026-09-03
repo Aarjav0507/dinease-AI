@@ -12,7 +12,8 @@ from app.repositories.payment_repository import PaymentRepository
 from app.core.razorpay_client import razorpay_client
 from app.core.constants import (
     PAYMENT_PAID,
-    CONFIRMED
+    CONFIRMED,
+    PAYMENT_FAILED
 )
 
 class PaymentService:
@@ -166,7 +167,7 @@ class PaymentService:
 
         except Exception:
 
-            payment.payment_status = "FAILED"
+            payment.payment_status = PAYMENT_FAILED
 
             PaymentRepository.update(
                 db,
@@ -187,7 +188,7 @@ class PaymentService:
             payment_data.razorpay_signature
         )
 
-        payment.payment_status = "SUCCESS"
+        payment.payment_status = PAYMENT_PAID
 
         # Update Order
         order.payment_status =  PAYMENT_PAID
